@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delícia Express - Delivery Gourmet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Transições suaves para troca de páginas */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Estilo personalizado para o banner */
+        .hero-banner {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+        }
+        
+        /* Estilo para os cards de comida */
+        .food-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .food-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilo para o carrinho flutuante */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 12px;
+            background-color: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Cabeçalho/Navegação -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-utensils text-2xl text-orange-500 mr-2"></i>
+                <h1 class="text-2xl font-bold text-gray-800">Delícia <span class="text-orange-500">Express</span></h1>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="nav-link active" data-page="home">Início</a>
+                <a href="#" class="nav-link" data-page="menu">Cardápio</a>
+                <a href="#" class="nav-link" data-page="about">Sobre Nós</a>
+                <a href="#" class="nav-link" data-page="contact">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <a href="#" class="cart-icon" data-page="cart">
+                        <i class="fas fa-shopping-cart text-xl text-gray-700"></i>
+                        <span class="cart-badge hidden">0</span>
+                    </a>
+                </div>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div class="md:hidden hidden bg-white py-2 px-4 shadow-md" id="mobile-menu">
+            <a href="#" class="block py-2 nav-link active" data-page="home">Início</a>
+            <a href="#" class="block py-2 nav-link" data-page="menu">Cardápio</a>
+            <a href="#" class="block py-2 nav-link" data-page="about">Sobre Nós</a>
+            <a href="#" class="block py-2 nav-link" data-page="contact">Contato</a>
+            <a href="#" class="block py-2 nav-link" data-page="cart">Carrinho</a>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal (Páginas) -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Página Inicial -->
+        <div class="page active" id="home-page">
+            <!-- Banner Hero -->
+            <section class="hero-banner rounded-lg flex items-center justify-center text-center text-white mb-12">
+                <div class="px-6">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">Comida deliciosa entregue na sua porta</h2>
+                    <p class="text-xl mb-8">Pratos gourmet preparados com ingredientes frescos e muito amor</p>
+                    <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300">
+                        Peça Agora
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Destaques do Cardápio -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Nossos Destaques</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Item 1 -->
+                    <div class="food-card bg-white rounded-lg overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=781&q=80" alt="Pizza Margherita" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Pizza Margherita</h3>
+                                <span class="text-orange-500 font-bold">R$ 45,90</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Massa fina, molho de tomate caseiro, mussarela fresca, manjericão e azeite de oliva.</p>
+                            <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="1" data-name="Pizza Margherita" data-price="45.90">
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 2 -->
+                    <div class="food-card bg-white rounded-lg overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Hambúrguer Gourmet" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Hambúrguer Gourmet</h3>
+                                <span class="text-orange-500 font-bold">R$ 32,50</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Pão brioche, carne angus 180g, queijo cheddar, bacon crocante e molho especial.</p>
+                            <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="2" data-name="Hambúrguer Gourmet" data-price="32.50">
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 3 -->
+                    <div class="food-card bg-white rounded-lg overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1527&q=80" alt="Tiramisu" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">Tiramisu</h3>
+                                <span class="text-orange-500 font-bold">R$ 18,90</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Sobremesa italiana clássica com camadas de biscoitos champanhe, café, mascarpone e cacau.</p>
+                            <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="3" data-name="Tiramisu" data-price="18.90">
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sobre Nós Resumo -->
+            <section class="bg-orange-50 rounded-lg p-8 mb-12">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-6 md:mb-0 md:pr-8">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Equipe do restaurante" class="rounded-lg shadow-md w-full">
+                    </div>
+                    <div class="md:w-1/2">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Nossa História</h2>
+                        <p class="text-gray-700 mb-4">Fundado em 2025, o Delícia Express tem como missão trazer uma nova forma de gastronomia para o povo amazonense e se tornar referência no norte do país.</p>
+                        <p class="text-gray-700 mb-6">Nossa equipe de chefs talentosos trabalha com ingredientes frescos para criar pratos que encantam o paladar.</p>
+                        <a href="#" class="nav-link text-orange-500 font-bold inline-flex items-center" data-page="about">
+                            Conheça mais sobre nós <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- Página de Cardápio -->
+        <div class="page" id="menu-page">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8">Nosso Cardápio Completo</h1>
+            
+            <!-- Filtros -->
+            <div class="flex flex-wrap gap-2 mb-8">
+                <button class="category-filter px-4 py-2 rounded-full bg-orange-500 text-white" data-category="all">Todos</button>
+                <button class="category-filter px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300" data-category="pizza">Pizzas</button>
+                <button class="category-filter px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300" data-category="burger">Lanches</button>
+                <button class="category-filter px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300" data-category="pasta">Massas</button>
+                <button class="category-filter px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300" data-category="dessert">Sobremesas</button>
+                <button class="category-filter px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300" data-category="drink">Bebidas</button>
+            </div>
+            
+            <!-- Lista de Itens -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-items">
+                <!-- Pizza Margherita -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="pizza">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=781&q=80" alt="Pizza Margherita" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Pizza Margherita</h3>
+                            <span class="text-orange-500 font-bold">R$ 45,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Massa fina, molho de tomate caseiro, mussarela fresca, manjericão e azeite de oliva.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="1" data-name="Pizza Margherita" data-price="45.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Hambúrguer Gourmet -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="burger">
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Hambúrguer Gourmet" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Hambúrguer Gourmet</h3>
+                            <span class="text-orange-500 font-bold">R$ 32,50</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Pão brioche, carne angus 180g, queijo cheddar, bacon crocante e molho especial.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="2" data-name="Hambúrguer Gourmet" data-price="32.50">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tiramisu -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="dessert">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1527&q=80" alt="Tiramisu" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Tiramisu</h3>
+                            <span class="text-orange-500 font-bold">R$ 18,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Sobremesa italiana clássica com camadas de biscoitos champanhe, café, mascarpone e cacau.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="3" data-name="Tiramisu" data-price="18.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Pizza Calabresa -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="pizza">
+                    <img src="https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Pizza Calabresa" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Pizza Calabresa</h3>
+                            <span class="text-orange-500 font-bold">R$ 48,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Massa fina, molho de tomate, mussarela, calabresa fatiada, cebola e azeitonas.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="4" data-name="Pizza Calabresa" data-price="48.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Batata Frita -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="burger">
+                    <img src="imagens/batata_frita.jpg" alt="Batata Frita" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Batata Frita Crocante</h3>
+                            <span class="text-orange-500 font-bold">R$ 15,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Batata selecionada cortada em palitos, frita na hora e temperada com sal e páprica.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="5" data-name="Batata Frita Crocante" data-price="15.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Spaghetti Carbonara -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="pasta">
+                    <img src="imagens/carbonara.jpg" alt="Spaghetti Carbonara" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Spaghetti Carbonara</h3>
+                            <span class="text-orange-500 font-bold">R$ 36,50</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Massa al dente com molho cremoso de ovos, queijo parmesão, bacon e pimenta do reino.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="6" data-name="Spaghetti Carbonara" data-price="36.50">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Brownie com Sorvete -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="dessert">
+                    <img src="https://images.unsplash.com/photo-1564355808539-22fda35bed7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80" alt="Brownie com Sorvete" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Brownie com Sorvete</h3>
+                            <span class="text-orange-500 font-bold">R$ 22,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Brownie de chocolate quente acompanhado de sorvete de baunilha e calda de chocolate.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="7" data-name="Brownie com Sorvete" data-price="22.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Refrigerante -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="drink">
+                    <img src="imagens/refrigerante.jpg" alt="Refrigerante" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Refrigerante 350ml</h3>
+                            <span class="text-orange-500 font-bold">R$ 7,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Refrigerante gelado em lata. Sabores: Coca-Cola, Guaraná, Fanta Laranja ou Sprite.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="8" data-name="Refrigerante 350ml" data-price="7.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Suco Natural -->
+                <div class="food-card menu-item bg-white rounded-lg overflow-hidden shadow-md" data-category="drink">
+                    <img src="imagens/suco.jpg" alt="Suco Natural" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-800">Suco Natural 500ml</h3>
+                            <span class="text-orange-500 font-bold">R$ 12,90</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Suco natural feito na hora. Sabores: Laranja, Maracujá, Abacaxi com Hortelã ou Morango.</p>
+                        <button class="add-to-cart w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded transition duration-300" data-id="9" data-name="Suco Natural 500ml" data-price="12.90">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Página de Carrinho -->
+        <div class="page" id="cart-page">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8">Seu Carrinho</h1>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Itens do Carrinho -->
+                <div class="lg:w-2/3">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6" id="cart-items-container">
+                        <div class="text-center py-8" id="empty-cart-message">
+                            <i class="fas fa-shopping-cart text-5xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-bold text-gray-600 mb-2">Seu carrinho está vazio</h3>
+                            <p class="text-gray-500 mb-4">Adicione itens deliciosos do nosso cardápio</p>
+                            <a href="#" class="nav-link inline-block bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded transition duration-300" data-page="menu">
+                                Ver Cardápio
+                            </a>
+                        </div>
+                        
+                        <!-- Itens serão adicionados aqui dinamicamente -->
+                        <div id="cart-items-list" class="hidden">
+                            <!-- Exemplo de item (será gerado dinamicamente) -->
+                            <!--
+                            <div class="cart-item flex items-center py-4 border-b border-gray-200" data-id="1">
+                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=781&q=80" alt="Pizza Margherita" class="w-20 h-20 object-cover rounded">
+                                <div class="ml-4 flex-grow">
+                                    <h3 class="font-bold text-gray-800">Pizza Margherita</h3>
+                                    <p class="text-gray-600 text-sm">R$ 45,90</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <button class="decrease-quantity w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <i class="fas fa-minus text-xs"></i>
+                                    </button>
+                                    <span class="quantity mx-2">1</span>
+                                    <button class="increase-quantity w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <i class="fas fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                                <button class="remove-item ml-4 text-red-500">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumo do Pedido -->
+                <div class="lg:w-1/3">
+                    <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Resumo do Pedido</h2>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span class="font-medium" id="subtotal">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Taxa de Entrega</span>
+                                <span class="font-medium" id="delivery-fee">R$ 8,00</span>
+                            </div>
+                            <div class="flex justify-between border-t border-gray-200 pt-3 mt-3">
+                                <span class="font-bold">Total</span>
+                                <span class="font-bold text-orange-500 text-lg" id="total">R$ 8,00</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded transition duration-300" id="checkout-button">
+                            Finalizar Pedido
+                        </button>
+                        
+                        <p class="text-xs text-gray-500 mt-4 text-center">Ao finalizar, você será redirecionado para a página de pagamento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Página Sobre Nós -->
+        <div class="page" id="about-page">
+            <div class="flex flex-col md:flex-row gap-8 mb-12">
+                <div class="md:w-1/2">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Nossa História</h1>
+                    <p class="text-gray-700 mb-4">O Delícia Express foi fundado em 2025 pelo chef Roberto Silva, com a missão de trazer comida de qualidade para o delivery, sem abrir mão do sabor e da apresentação dos pratos.</p>
+                    <p class="text-gray-700 mb-4">Começamos como uma pequena cozinha no bairro Adrianópolis, em Manaus, e hoje atendemos toda a cidade com nossa rede de entregadores próprios, garantindo que sua comida chegue quentinha e no tempo certo.</p>
+                    <p class="text-gray-700 mb-6">Nossa equipe é formada por chefs experientes que já trabalharam em restaurantes renomados no Brasil e no exterior, trazendo técnicas e sabores internacionais para o seu dia a dia.</p>
+                    
+                    <div class="bg-orange-50 p-6 rounded-lg">
+                        <h2 class="text-xl font-bold text-gray-800 mb-3">Nossa Missão</h2>
+                        <p class="text-gray-700 mb-3">"Proporcionar experiências gastronômicas memoráveis através de pratos bem elaborados, ingredientes frescos e um serviço excepcional, tudo no conforto da sua casa."</p>
+                        
+                        <h2 class="text-xl font-bold text-gray-800 mb-3 mt-4">Nossos Valores</h2>
+                        <ul class="list-disc pl-5 text-gray-700 space-y-2">
+                            <li>Qualidade acima de tudo</li>
+                            <li>Respeito aos ingredientes e produtores</li>
+                            <li>Inovação constante no cardápio</li>
+                            <li>Sustentabilidade em nossas operações</li>
+                            <li>Satisfação total do cliente</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Nossa equipe" class="w-full rounded-lg shadow-md mb-6">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Nossa cozinha" class="w-full h-48 object-cover rounded-lg shadow-md">
+                        <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Ingredientes frescos" class="w-full h-48 object-cover rounded-lg shadow-md">
+                        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Prato sendo preparado" class="w-full h-48 object-cover rounded-lg shadow-md">
+                        <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80" alt="Entregador" class="w-full h-48 object-cover rounded-lg shadow-md">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-orange-50 rounded-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Conheça Nossos Chefs</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Chef 1 -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1581299894007-aaa50297cf16?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Chef Roberto Silva" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">Roberto Silva</h3>
+                            <p class="text-orange-500 font-medium mb-3">Chef Executivo e Fundador</p>
+                            <p class="text-gray-600 text-sm">Formado pelo Instituto Cordon Bleu em Paris, Roberto traz mais de 20 anos de experiência em cozinhas internacionais.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Chef 2 -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1376&q=80" alt="Chef Ana Beatriz" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">Ana Beatriz</h3>
+                            <p class="text-orange-500 font-medium mb-3">Chef de Confeitaria</p>
+                            <p class="text-gray-600 text-sm">Especialista em sobremesas, Ana já trabalhou em restaurantes premiados em todo o Brasil e no exterior e é responsável por nossos doces incríveis.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Chef 3 -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                        <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Chef Carlos Mendes" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">Carlos Mendes</h3>
+                            <p class="text-orange-500 font-medium mb-3">Chef de Massas</p>
+                            <p class="text-gray-600 text-sm">Com raízes italianas, Carlos domina a arte da massa fresca e molhos autênticos que fazem sucesso em nosso cardápio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Página de Contato -->
+        <div class="page" id="contact-page">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8">Entre em Contato</h1>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Formulário -->
+                <div class="lg:w-1/2">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Envie sua mensagem</h2>
+                        
+                        <form id="contact-form">
+                            <div class="mb-4">
+                                <label for="name" class="block text-gray-700 font-medium mb-2">Nome</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-700 font-medium mb-2">E-mail</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="subject" class="block text-gray-700 font-medium mb-2">Assunto</label>
+                                <select id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                                    <option value="feedback">Feedback</option>
+                                    <option value="complaint">Reclamação</option>
+                                    <option value="suggestion">Sugestão</option>
+                                    <option value="partnership">Parceria</option>
+                                    <option value="other">Outro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="message" class="block text-gray-700 font-medium mb-2">Mensagem</label>
+                                <textarea id="message" name="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded transition duration-300">
+                                Enviar Mensagem
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Informações de Contato -->
+                <div class="lg:w-1/2">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Informações</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-orange-500 text-xl mt-1 mr-4"></i>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">Endereço</h3>
+                                    <p class="text-gray-600">Rua Rio Branco - Bairro Vieiralves<br>Manaus-AM, 69000-000</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <i class="fas fa-phone-alt text-orange-500 text-xl mt-1 mr-4"></i>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">Telefone</h3>
+                                    <p class="text-gray-600">(92) 1234-5678</p>
+                                    <p class="text-gray-600">WhatsApp: (92) 98765-4321</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <i class="fas fa-envelope text-orange-500 text-xl mt-1 mr-4"></i>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">E-mail</h3>
+                                    <p class="text-gray-600">contato@deliciaexpress.com.br</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <i class="fas fa-clock text-orange-500 text-xl mt-1 mr-4"></i>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">Horário de Funcionamento</h3>
+                                    <p class="text-gray-600">Segunda a Sexta: 11h às 23h</p>
+                                    <p class="text-gray-600">Sábado e Domingo: 11h às 00h</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mapa -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <img src="https://maps.googleapis.com/maps/api/staticmap?center=-23.5617,-46.6560&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7C-23.5617,-46.6560&key=YOUR_API_KEY" alt="Mapa da localização" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-gray-800 mb-2">Nossa Localização</h3>
+                            <p class="text-gray-600">Estamos localilados no bairro Vieiralves, com fácil acesso por ônibus e um estacionamento amplo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-utensils text-2xl text-orange-500 mr-2"></i>
+                        <h2 class="text-2xl font-bold">Delícia <span class="text-orange-500">Express</span></h2>
+                    </div>
+                    <p class="text-gray-400 max-w-md">Entregando experiências gastronômicas incríveis desde 2025. Qualidade, sabor e conveniência em cada pedido.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Links Rápidos</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="home">Início</a></li>
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="menu">Cardápio</a></li>
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="about">Sobre Nós</a></li>
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="contact">Contato</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Categorias</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="menu" data-category="pizza">Pizzas</a></li>
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="menu" data-category="burger">Lanches</a></li>
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="menu" data-category="pasta">Massas</a></li>
+                            <li><a href="#" class="nav-link text-gray-400 hover:text-white transition duration-300" data-page="menu" data-category="dessert">Sobremesas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Redes Sociais</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                        
+                        <h3 class="text-lg font-bold mt-6 mb-4">Baixe nosso App</h3>
+                        <div class="flex flex-col space-y-2">
+                            <a href="#" class="flex items-center bg-black text-white px-3 py-2 rounded">
+                                <i class="fab fa-apple mr-2"></i>
+                                <span class="text-xs">Disponível na<br><span class="font-bold">App Store</span></span>
+                            </a>
+                            <a href="#" class="flex items-center bg-black text-white px-3 py-2 rounded">
+                                <i class="fab fa-google-play mr-2"></i>
+                                <span class="text-xs">Disponível no<br><span class="font-bold">Google Play</span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2025 Delícia Express. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Navegação entre páginas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const cartIcon = document.querySelector('.cart-icon');
+            const cartBadge = document.querySelector('.cart-badge');
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
+            const categoryFilters = document.querySelectorAll('.category-filter');
+            const contactForm = document.getElementById('contact-form');
+            
+            // Carrinho
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Atualizar badge do carrinho
+            function updateCartBadge() {
+                const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+                if (totalItems > 0) {
+                    cartBadge.textContent = totalItems;
+                    cartBadge.classList.remove('hidden');
+                } else {
+                    cartBadge.classList.add('hidden');
+                }
+            }
+            
+            // Atualizar página do carrinho
+            function updateCartPage() {
+                const cartItemsContainer = document.getElementById('cart-items-list');
+                const emptyCartMessage = document.getElementById('empty-cart-message');
+                const subtotalElement = document.getElementById('subtotal');
+                const totalElement = document.getElementById('total');
+                
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '';
+                    cartItemsContainer.classList.add('hidden');
+                    emptyCartMessage.classList.remove('hidden');
+                    subtotalElement.textContent = 'R$ 0,00';
+                    totalElement.textContent = 'R$ 8,00';
+                    return;
+                }
+                
+                emptyCartMessage.classList.add('hidden');
+                cartItemsContainer.classList.remove('hidden');
+                
+                // Gerar itens do carrinho
+                let cartItemsHTML = '';
+                let subtotal = 0;
+                
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    cartItemsHTML += `
+                        <div class="cart-item flex items-center py-4 border-b border-gray-200" data-id="${item.id}">
+                            <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded">
+                            <div class="ml-4 flex-grow">
+                                <h3 class="font-bold text-gray-800">${item.name}</h3>
+                                <p class="text-gray-600 text-sm">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+                            </div>
+                            <div class="flex items-center">
+                                <button class="decrease-quantity w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-minus text-xs"></i>
+                                </button>
+                                <span class="quantity mx-2">${item.quantity}</span>
+                                <button class="increase-quantity w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+                            </div>
+                            <button class="remove-item ml-4 text-red-500">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                cartItemsContainer.innerHTML = cartItemsHTML;
+                
+                // Calcular totais
+                const deliveryFee = 8.00;
+                const total = subtotal + deliveryFee;
+                
+                subtotalElement.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+                totalElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+                
+                // Adicionar eventos aos botões do carrinho
+                document.querySelectorAll('.decrease-quantity').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const itemId = parseInt(this.closest('.cart-item').dataset.id);
+                        const itemIndex = cart.findIndex(item => item.id === itemId);
+                        
+                        if (cart[itemIndex].quantity > 1) {
+                            cart[itemIndex].quantity--;
+                        } else {
+                            cart.splice(itemIndex, 1);
+                        }
+                        
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartBadge();
+                        updateCartPage();
+                    });
+                });
+                
+                document.querySelectorAll('.increase-quantity').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const itemId = parseInt(this.closest('.cart-item').dataset.id);
+                        const itemIndex = cart.findIndex(item => item.id === itemId);
+                        
+                        cart[itemIndex].quantity++;
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartBadge();
+                        updateCartPage();
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const itemId = parseInt(this.closest('.cart-item').dataset.id);
+                        const itemIndex = cart.findIndex(item => item.id === itemId);
+                        
+                        cart.splice(itemIndex, 1);
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartBadge();
+                        updateCartPage();
+                    });
+                });
+            }
+            
+            // Inicializar badge do carrinho
+            updateCartBadge();
+            
+            // Mostrar/ocultar menu mobile
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Adicionar ao carrinho
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const name = this.dataset.name;
+                    const price = parseFloat(this.dataset.price);
+                    const image = this.closest('.food-card').querySelector('img').src;
+                    
+                    // Verificar se o item já está no carrinho
+                    const existingItem = cart.find(item => item.id === id);
+                    
+                    if (existingItem) {
+                        existingItem.quantity++;
+                    } else {
+                        cart.push({
+                            id,
+                            name,
+                            price,
+                            quantity: 1,
+                            image
+                        });
+                    }
+                    
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartBadge();
+                    
+                    // Feedback visual
+                    const originalText = this.textContent;
+                    this.textContent = 'Adicionado!';
+                    this.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+                    this.classList.add('bg-green-500', 'hover:bg-green-600');
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.classList.remove('bg-green-500', 'hover:bg-green-600');
+                        this.classList.add('bg-orange-500', 'hover:bg-orange-600');
+                    }, 1000);
+                });
+            });
+            
+            // Finalizar pedido
+            const checkoutButton = document.getElementById('checkout-button');
+            if (checkoutButton) {
+                checkoutButton.addEventListener('click', function() {
+                    if (cart.length === 0) return;
+                    
+                    alert('Pedido finalizado com sucesso! Em breve você receberá um e-mail com os detalhes.');
+                    cart = [];
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartBadge();
+                    updateCartPage();
+                    
+                    // Voltar para a página inicial
+                    showPage('home');
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.dataset.page === 'home') {
+                            link.classList.add('active');
+                        }
+                    });
+                });
+            }
+            
+            // Filtro de categorias
+            categoryFilters.forEach(filter => {
+                filter.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // Atualizar botão ativo
+                    categoryFilters.forEach(f => {
+                        f.classList.remove('bg-orange-500', 'text-white');
+                        f.classList.add('bg-gray-200', 'hover:bg-gray-300');
+                    });
+                    
+                    this.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                    this.classList.add('bg-orange-500', 'text-white');
+                    
+                    // Filtrar itens
+                    const menuItems = document.querySelectorAll('.menu-item');
+                    
+                    menuItems.forEach(item => {
+                        if (category === 'all' || item.dataset.category === category) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+            
+            // Formulário de contato
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const subject = document.getElementById('subject').value;
+                    const message = document.getElementById('message').value;
+                    
+                    // Simular envio
+                    alert(`Obrigado, ${name}! Sua mensagem foi enviada com sucesso. Entraremos em contato em breve.`);
+                    contactForm.reset();
+                });
+            }
+            
+            // Mostrar página
+            function showPage(pageId) {
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                document.getElementById(`${pageId}-page`).classList.add('active');
+                
+                // Rolagem para o topo
+                window.scrollTo(0, 0);
+                
+                // Atualizar página do carrinho se necessário
+                if (pageId === 'cart') {
+                    updateCartPage();
+                }
+            }
+            
+            // Navegação
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const page = this.dataset.page;
+                    
+                    // Atualizar link ativo
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    
+                    this.classList.add('active');
+                    
+                    // Mostrar página correspondente
+                    showPage(page);
+                    
+                    // Fechar menu mobile se aberto
+                    mobileMenu.classList.add('hidden');
+                    
+                    // Filtro de categoria se aplicável
+                    if (this.dataset.category) {
+                        const category = this.dataset.category;
+                        const filterButton = document.querySelector(`.category-filter[data-category="${category}"]`);
+                        
+                        if (filterButton) {
+                            filterButton.click();
+                        }
+                    }
+                });
+            });
+            
+            // Navegação inicial
+            const initialPage = window.location.hash ? window.location.hash.substring(1) : 'home';
+            const initialLink = document.querySelector(`.nav-link[data-page="${initialPage}"]`);
+            
+            if (initialLink) {
+                initialLink.click();
+            }
+        });
+    </script>
+</body>
+</html>
